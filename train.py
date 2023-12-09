@@ -2,15 +2,18 @@ import random
 import csv
 
 # Parameters for Q-learning
-learning_rate = 0.1
+learning_rate = 0.2
 discount_factor = 0.9
-num_episodes = 1e7
+num_episodes = int(1e7)
 epsilon = 1.0  # Exploration rate
-epsilon_min = 0.05
+epsilon_min = 0.01
 epsilon_decay = 0.999
 
 # Initialise Q-table
 Q_table = {}
+player1_wins = 0
+player1_draws = 0
+player1_losses = 0
 
 
 def get_possible_actions(state):
@@ -47,12 +50,10 @@ def get_next_state_and_reward(state, action):
 
 # Q-learning algorithm
 for episode in range(num_episodes):
-    if episode % (num_episodes // 10) == 0:
-        print(f"Episode {episode}")
+    # if episode % (num_episodes // 10) == 0:
+        # print(f"Episode {episode}")
 
     state = [0] * 9  # Starting state - empty board
-
-    # Determine who starts: 1 for Player 1, 2 for Player 2
     current_player = 1 if random.random() < 0.5 else 2
 
     # If Player 2 starts, make a random move
@@ -64,6 +65,7 @@ for episode in range(num_episodes):
 
     while True:
         state_str = str(state)
+        # add current state to Q table if it's not in there yet
         if state_str not in Q_table:
             Q_table[state_str] = [0] * 9
 
@@ -91,13 +93,31 @@ for episode in range(num_episodes):
         state = new_state
 
         if reward != 0:  # Game ended
+            if reward == 1:
+                player1_wins += 1
+            elif reward == -1:
+                player1_losses += 1
+            else:
+                player1_draws += 1
             break
 
     # Decay epsilon
     epsilon = max(epsilon_min, epsilon_decay * epsilon)
 
+    # Calculate and print win rate periodically
+    if episode > 0 and ((episode <= num_episodes // 100 and episode % (num_episodes // 1000) == 0) or episode % (num_episodes // 100) == 0):
+        total_games = player1_wins + player1_losses + player1_draws
+        win_rate = (player1_wins / total_games)
+        draw_rate = (player1_draws / total_games)
+        loss_rate = (player1_losses / total_games)
+        print(f"Episode {episode} -- Win rate: {win_rate:.3f}, Draw Rate: {draw_rate:.3f}, Loss rate: {loss_rate:.3f}")
+        player1_wins = 0
+        player1_draws = 0
+        player1_losses = 0
+
+
 # Save Q-table to CSV file
-with open('q_table.csv', 'w', newline='') as file:
+with open('q_table2.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     for state, actions in Q_table.items():
         writer.writerow([state] + actions)

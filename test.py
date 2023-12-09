@@ -91,5 +91,5 @@ if log_lost_games:
 
 
 print(f"Player 1 won: {wins} games")
-print(f"Draws: {draws}")
+print(f"Draws: {draws} games")
 print(f"Player 1 lost: {losses} games")
