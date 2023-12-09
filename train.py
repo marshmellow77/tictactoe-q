@@ -90,12 +90,6 @@ for episode in range(num_episodes):
         state = new_state
 
         if reward != 0:  # Game ended
-            if reward == 1:
-                player1_wins += 1
-            elif reward == -1:
-                player1_losses += 1
-            else:
-                player1_draws += 1
             break
 
     # Decay epsilon
