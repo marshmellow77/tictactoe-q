@@ -47,9 +47,6 @@ def get_next_state_and_reward(state, action):
 
 # Q-learning algorithm
 for episode in range(num_episodes):
-    # if episode % (num_episodes // 10) == 0:
-        # print(f"Episode {episode}")
-
     state = [0] * 9  # Starting state - empty board
     current_player = 1 if random.random() < 0.5 else 2
 
