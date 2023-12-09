@@ -11,9 +11,6 @@ epsilon_decay = 0.999
 
 # Initialise Q-table
 Q_table = {}
-player1_wins = 0
-player1_draws = 0
-player1_losses = 0
 
 
 def get_possible_actions(state):
@@ -104,20 +101,8 @@ for episode in range(num_episodes):
     # Decay epsilon
     epsilon = max(epsilon_min, epsilon_decay * epsilon)
 
-    # Calculate and print win rate periodically
-    if episode > 0 and ((episode <= num_episodes // 100 and episode % (num_episodes // 1000) == 0) or episode % (num_episodes // 100) == 0):
-        total_games = player1_wins + player1_losses + player1_draws
-        win_rate = (player1_wins / total_games)
-        draw_rate = (player1_draws / total_games)
-        loss_rate = (player1_losses / total_games)
-        print(f"Episode {episode} -- Win rate: {win_rate:.3f}, Draw Rate: {draw_rate:.3f}, Loss rate: {loss_rate:.3f}")
-        player1_wins = 0
-        player1_draws = 0
-        player1_losses = 0
-
-
 # Save Q-table to CSV file
-with open('q_table2.csv', 'w', newline='') as file:
+with open('q_table.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     for state, actions in Q_table.items():
         writer.writerow([state] + actions)
